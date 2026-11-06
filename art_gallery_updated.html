@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Gallery - Home</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#f4f1ed;color:#333}
+.navbar{background:#292421;min-height:75px;display:grid;grid-template-columns:1fr minmax(240px,430px) 1fr;align-items:center;gap:24px;padding:12px 4%;position:sticky;top:0;z-index:100}
+.profile-logo{color:#fff;font-size:22px;font-weight:bold;text-decoration:none;white-space:nowrap}
+.search-wrap{position:relative;width:100%}
+.search-wrap input{width:100%;padding:12px 18px 12px 42px;border:0;border-radius:24px;background:#fff;font-size:14px;outline:none}
+.search-wrap span{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#777}
+.nav-links{display:flex;justify-content:flex-end;gap:25px}
+.nav-links a{color:#fff;text-decoration:none;font-size:15px;white-space:nowrap;transition:.2s}
+.nav-links a:hover{color:#d6a66a}
+.nav-links a.active{color:#fff;background:#9b6636;padding:5px 7px;border-radius:20px;font-weight:bold;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.nav-links a.active:hover{color:#fff;background:#b47b45}
+.layout{max-width:1250px;margin:30px auto;padding:0 20px;display:grid;grid-template-columns:minmax(0,2fr) minmax(250px,.9fr);gap:28px;align-items:start}
+.feed{min-width:0}
+.upload-card,.post,.categories-panel{background:#fff;border-radius:12px;box-shadow:0 3px 12px rgba(0,0,0,.08)}
+.upload-card{padding:20px;margin-bottom:25px}
+.upload-top{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.avatar{width:44px;height:44px;flex:0 0 44px;border-radius:50%;background:#b18b68;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:17px}
+.upload-title{font-size:17px;color:#292421}
+.upload-area{border:1px solid #e6e0da;border-radius:10px;padding:14px;background:#faf9f7}
+.upload-area textarea{width:100%;min-height:65px;resize:vertical;border:0;outline:0;background:transparent;font-size:15px;color:#333}
+.upload-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid #eee;padding-top:12px;margin-top:8px}
+.file-label{display:inline-flex;align-items:center;gap:8px;color:#8b5d35;font-weight:bold;font-size:14px;cursor:pointer}
+.file-label input{display:none}
+.upload-button{border:0;border-radius:20px;background:#292421;color:#fff;padding:10px 22px;font-weight:bold;cursor:pointer}
+.upload-button:hover{background:#9b6636}
+.preview{display:none;max-width:100%;max-height:260px;object-fit:contain;margin:12px auto 0;border-radius:8px}
+.post{margin-bottom:25px;overflow:hidden}
+.post-header{display:flex;align-items:center;padding:15px 20px;gap:12px}
+.artist-info h3{font-size:16px}
+.artist-info p{font-size:12px;color:#888;margin-top:4px}
+.artwork{width:100%;height:350px;object-fit:cover;display:block;background:#eee}
+.post-description{padding:15px 20px}
+.post-description h3{margin-bottom:8px;color:#292421}
+.post-description p{font-size:14px;line-height:1.6;color:#666}
+.price{margin-top:12px;font-size:18px;font-weight:bold;color:#9b6636}
+.post-actions{display:flex;gap:25px;padding:12px 20px;border-top:1px solid #eee}
+.post-actions button{border:0;background:none;cursor:pointer;font-size:15px;color:#555;font-weight:bold}
+.post-actions button:hover{color:#b47b45}
+.likes{padding:0 20px 12px;font-size:13px;color:#777}
+.comment-section{padding:12px 20px;border-top:1px solid #eee}
+.comment-section p{font-size:13px;margin-bottom:8px;color:#555}
+.comment-input{display:flex;gap:10px;margin-top:12px}
+.comment-input input{flex:1;min-width:0;padding:10px;border:1px solid #ddd;border-radius:20px;outline:none}
+.comment-input button{padding:9px 18px;border:0;background:#292421;color:#fff;border-radius:20px;cursor:pointer}
+.comment-input button:hover{background:#9b6636}
+.categories-panel{padding:20px;position:sticky;top:95px}
+.categories-panel h2{font-size:19px;color:#292421;margin-bottom:5px}
+.categories-panel .subheading{font-size:13px;color:#888;margin-bottom:16px}
+.category-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.category-card{border:2px solid transparent;border-radius:9px;overflow:hidden;background:#faf9f7;cursor:pointer;text-align:left;padding:0;transition:.2s}
+.category-card:hover,.category-card.active{border-color:#b47b45;transform:translateY(-2px)}
+.category-card img{width:100%;height:100px;object-fit:cover;display:block}
+.category-card span{display:block;padding:9px 8px;font-size:13px;font-weight:bold;color:#40352d}
+.clear-filter{margin-top:15px;border:0;background:none;color:#9b6636;font-weight:bold;cursor:pointer;font-size:13px}
+.empty-state{display:none;background:#fff;border-radius:12px;padding:25px;text-align:center;color:#777}
+@media(max-width:850px){.navbar{grid-template-columns:1fr 1fr;gap:12px}.search-wrap{grid-column:1/-1;grid-row:2}.nav-links{gap:14px}.layout{grid-template-columns:1fr}.categories-panel{position:static;grid-row:1}.category-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:560px){.navbar{display:flex;flex-direction:column;align-items:stretch;padding:14px 18px}.nav-links{justify-content:space-between;flex-wrap:wrap}.nav-links a{font-size:13px}.layout{padding:0 12px;margin:18px auto}.category-grid{grid-template-columns:repeat(2,1fr)}.artwork{height:260px}.upload-card{padding:15px}}
+
+/* Screenshot warning popup */
+.screenshot-warning{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(20,16,13,.68);backdrop-filter:blur(5px)}
+.screenshot-warning.is-visible{display:flex;animation:warningFadeIn .18s ease-out}
+.screenshot-warning-card{width:min(420px,100%);padding:30px 26px;background:#fff;border:1px solid #eadfd4;border-radius:18px;box-shadow:0 18px 55px rgba(0,0,0,.28);text-align:center;color:#292421}
+.screenshot-warning-icon{width:58px;height:58px;margin:0 auto 16px;border-radius:50%;display:grid;place-items:center;background:#f5e9dc;color:#9b6636;font-size:27px}
+.screenshot-warning-card h2{font-size:21px;margin-bottom:9px}
+.screenshot-warning-card p{font-size:14px;line-height:1.55;color:#70665e;margin-bottom:20px}
+.screenshot-warning-card button{border:0;border-radius:22px;padding:10px 25px;background:#292421;color:#fff;font-weight:bold;cursor:pointer}
+.screenshot-warning-card button:hover{background:#9b6636}
+@keyframes warningFadeIn{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.screenshot-warning.is-visible{animation:none}}
+
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <a href="profile.html" class="profile-logo">👤 Profile</a>
+  <div class="search-wrap"><span>⌕</span><input id="artSearch" type="search" placeholder="Search artworks or artists..." aria-label="Search artworks or artists"></div>
+  <div class="nav-links">
+    <a href="#" class="active" aria-current="page">Art Gallery</a><a href="commission.html">Commissions</a><a href="messages.html">Messages</a><a href="transaction.html">Transactions</a>
+  </div>
+</nav>
+
+<main class="layout">
+  <section class="feed" aria-label="Artwork feed">
+    <div class="upload-card">
+      <div class="upload-top"><div class="avatar">Y</div><h2 class="upload-title">Upload your artwork here!</h2></div>
+      <form id="uploadForm" class="upload-area">
+        <textarea id="artCaption" placeholder="Share something about your artwork..." aria-label="Artwork description"></textarea>
+        <img id="imagePreview" class="preview" alt="Selected artwork preview">
+        <div class="upload-tools">
+          <label class="file-label">🖼️ Add photo
+            <input id="artFile" type="file" accept="image/*">
+          </label>
+          <button class="upload-button" type="submit">Post Artwork</button>
+        </div>
+      </form>
+    </div>
+
+    <div id="posts">
+      <article class="post" data-category="Abstract Art">
+        <div class="post-header"><div class="avatar">JD</div><div class="artist-info"><h3>John David</h3><p>Digital Artist · Posted 2 hours ago</p></div></div>
+        <img class="artwork" src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=900" alt="Colorful abstract painting">
+        <div class="post-description"><h3>Abstract Dreams</h3><p>A beautiful abstract painting inspired by the combination of colors, emotions, and imagination. This artwork represents freedom and creativity through artistic expression.</p><div class="price">Price: ₱15,000.00</div></div>
+        <div class="post-actions"><button onclick="likePost(this)">♡ Like</button><button onclick="focusComment(this)">💬 Comment</button></div>
+        <div class="likes"><span>24</span> people liked this artwork.</div>
+        <div class="comment-section"><p><b>Maria:</b> This artwork is amazing!</p><p><b>Alex:</b> I love the colors!</p><div class="comment-input"><input type="text" placeholder="Write a comment..."><button onclick="addComment(this)">Post</button></div></div>
+      </article>
+
+      <article class="post" data-category="Traditional Art">
+        <div class="post-header"><div class="avatar">SM</div><div class="artist-info"><h3>Sophia Martinez</h3><p>Traditional Artist · Posted 5 hours ago</p></div></div>
+        <img class="artwork" src="https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?w=900" alt="Colorful traditional artwork">
+        <div class="post-description"><h3>Colors of Nature</h3><p>An expressive painting inspired by the beauty of nature. The vibrant colors represent life, peace, and the connection between humans and the environment.</p><div class="price">Price: ₱22,500.00</div></div>
+        <div class="post-actions"><button onclick="likePost(this)">♡ Like</button><button onclick="focusComment(this)">💬 Comment</button></div>
+        <div class="likes"><span>38</span> people liked this artwork.</div>
+        <div class="comment-section"><p><b>Daniel:</b> Such a wonderful painting!</p><p><b>Angela:</b> Beautiful masterpiece!</p><div class="comment-input"><input type="text" placeholder="Write a comment..."><button onclick="addComment(this)">Post</button></div></div>
+      </article>
+    </div>
+    <div id="emptyState" class="empty-state">No artworks found. Try another search or category.</div>
+  </section>
+
+  <aside class="categories-panel">
+    <h2>Art Categories</h2>
+    <p class="subheading">Explore artwork by category</p>
+    <div class="category-grid">
+      <button class="category-card" data-filter="Traditional Art"><img src="https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?w=500" alt="Traditional painting"><span>Traditional Art</span></button>
+      <button class="category-card" data-filter="Digital Art"><img src="https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=500" alt="Digital artwork"><span>Digital Art</span></button>
+      <button class="category-card" data-filter="Abstract Art"><img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=500" alt="Abstract painting"><span>Abstract Art</span></button>
+      <button class="category-card" data-filter="Photography"><img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" alt="Camera for photography"><span>Photography</span></button>
+      <button class="category-card" data-filter="Sculpture"><img src="https://images.unsplash.com/photo-1579783901586-d88db74b4fe4?w=500" alt="Sculpture artwork"><span>Sculpture</span></button>
+      <button class="category-card" data-filter="All"><img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=500" alt="Collection of colorful art"><span>All Artworks</span></button>
+    </div>
+    <button class="clear-filter" id="clearFilter">Show all artworks</button>
+  </aside>
+</main>
+
+
+<div class="screenshot-warning" id="screenshotWarning" role="alertdialog" aria-modal="true" aria-labelledby="screenshotWarningTitle" aria-describedby="screenshotWarningText">
+  <div class="screenshot-warning-card">
+    <div class="screenshot-warning-icon" aria-hidden="true">▣</div>
+    <h2 id="screenshotWarningTitle">Screenshot Restricted</h2>
+    <p id="screenshotWarningText">You can't take a screenshot of this artwork.</p>
+    <button type="button" id="closeScreenshotWarning">Got it</button>
+  </div>
+</div>
+
+<script>
+// Best-effort screenshot shortcut warning. Browsers cannot detect or block every
+// operating-system screenshot method, so this only catches common keyboard shortcuts.
+(()=>{
+  const warning=document.getElementById("screenshotWarning");
+  const closeButton=document.getElementById("closeScreenshotWarning");
+  let hideTimer;
+  function showScreenshotWarning(){
+    warning.classList.add("is-visible");
+    clearTimeout(hideTimer);
+    closeButton.focus();
+    hideTimer=setTimeout(()=>warning.classList.remove("is-visible"),3500);
+  }
+  function closeScreenshotWarning(){
+    warning.classList.remove("is-visible");
+    clearTimeout(hideTimer);
+  }
+  document.addEventListener("keydown",event=>{
+    const key=event.key.toLowerCase();
+    const printScreen=event.key==="PrintScreen";
+    const printShortcut=(event.ctrlKey||event.metaKey)&&key==="p";
+    if(printScreen||printShortcut){
+      event.preventDefault();
+      showScreenshotWarning();
+    }
+  });
+  closeButton.addEventListener("click",closeScreenshotWarning);
+  warning.addEventListener("click",event=>{if(event.target===warning)closeScreenshotWarning();});
+})();
+
+function likePost(button){
+  const liked=button.textContent.includes("Liked");
+  button.textContent=liked?"♡ Like":"♥ Liked";
+  button.style.color=liked?"#555":"#d9534f";
+  const likes=button.closest(".post").querySelector(".likes span");
+  likes.textContent=Number(likes.textContent)+(liked?-1:1);
+}
+function focusComment(button){button.closest(".post").querySelector(".comment-input input").focus();}
+function addComment(button){
+  const section=button.closest(".comment-input"),input=section.querySelector("input"),comment=input.value.trim();
+  if(comment){const p=document.createElement("p"),b=document.createElement("b");b.textContent="You: ";p.append(b,document.createTextNode(comment));section.parentElement.insertBefore(p,section);input.value="";}
+}
+const artFile=document.getElementById("artFile"),preview=document.getElementById("imagePreview");
+artFile.addEventListener("change",()=>{
+  const file=artFile.files[0];
+  if(file){preview.src=URL.createObjectURL(file);preview.style.display="block";}
+  else{preview.style.display="none";preview.removeAttribute("src");}
+});
+document.getElementById("uploadForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const file=artFile.files[0],caption=document.getElementById("artCaption").value.trim();
+  if(!file){alert("Please choose an artwork image first.");return;}
+  const post=document.createElement("article");post.className="post";post.dataset.category="Digital Art";
+  const header=document.createElement("div");header.className="post-header";
+  header.innerHTML='<div class="avatar">Y</div><div class="artist-info"><h3>You</h3><p>Artist · Just now</p></div>';
+  const img=document.createElement("img");img.className="artwork";img.src=URL.createObjectURL(file);img.alt="Uploaded artwork";
+  const desc=document.createElement("div");desc.className="post-description";
+  const title=document.createElement("h3");title.textContent=file.name.replace(/\.[^.]+$/,"")||"My Artwork";
+  const p=document.createElement("p");p.textContent=caption;
+  desc.append(title,p);
+  const actions=document.createElement("div");actions.className="post-actions";
+  actions.innerHTML='<button onclick="likePost(this)">♡ Like</button><button onclick="focusComment(this)">💬 Comment</button>';
+  const likes=document.createElement("div");likes.className="likes";likes.innerHTML="<span>0</span> people liked this artwork.";
+  const comments=document.createElement("div");comments.className="comment-section";
+  const inputRow=document.createElement("div");inputRow.className="comment-input";inputRow.innerHTML='<input type="text" placeholder="Write a comment..."><button onclick="addComment(this)">Post</button>';
+  comments.append(inputRow);post.append(header,img,desc,actions,likes,comments);
+  document.getElementById("posts").prepend(post);
+  document.getElementById("artCaption").value="";artFile.value="";preview.style.display="none";preview.removeAttribute("src");
+  applyFilters();
+});
+let activeCategory="All";
+function applyFilters(){
+  const q=document.getElementById("artSearch").value.toLowerCase().trim();let visible=0;
+  document.querySelectorAll("#posts .post").forEach(post=>{
+    const matchesCategory=activeCategory==="All"||post.dataset.category===activeCategory;
+    const matchesSearch=post.textContent.toLowerCase().includes(q);
+    post.style.display=matchesCategory&&matchesSearch?"":"none";
+    if(matchesCategory&&matchesSearch)visible++;
+  });
+  document.getElementById("emptyState").style.display=visible?"none":"block";
+}
+document.getElementById("artSearch").addEventListener("input",applyFilters);
+document.querySelectorAll(".category-card").forEach(card=>card.addEventListener("click",()=>{
+  activeCategory=card.dataset.filter;
+  document.querySelectorAll(".category-card").forEach(c=>c.classList.toggle("active",c===card));
+  applyFilters();
+}));
+document.getElementById("clearFilter").addEventListener("click",()=>{
+  activeCategory="All";document.getElementById("artSearch").value="";
+  document.querySelectorAll(".category-card").forEach(c=>c.classList.remove("active"));applyFilters();
+});
+</script>
+</body>
+</html>

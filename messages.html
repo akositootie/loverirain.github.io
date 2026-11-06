@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Messages - Art Gallery</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+body{background:#f4f1ed;color:#332d28}
+.navbar{min-height:68px;background:#292421;padding:12px 4%;display:grid;grid-template-columns:1fr minmax(250px,400px) 1fr;align-items:center;gap:28px;position:sticky;top:0;z-index:10}
+.profile-logo{color:#fff;text-decoration:none;font-size:21px;font-weight:700;white-space:nowrap}
+.search-wrap{position:relative}
+.search-wrap span{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#777}
+.search-wrap input{width:100%;border:0;border-radius:24px;padding:12px 18px 12px 40px;background:#fff;font-size:14px;outline:none}
+.nav-links{display:flex;justify-content:flex-end;align-items:center;gap:22px}
+.nav-links a{color:#fff;text-decoration:none;font-size:14px;white-space:nowrap;padding:9px 12px;border-radius:20px}
+.nav-links a:hover{color:#e0b27d}
+.nav-links a.active{background:#9b6636;color:#fff;font-weight:bold}
+.page{max-width:1240px;margin:34px auto;padding:0 22px;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:30px;align-items:start}
+.conversation{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(48,36,27,.09);overflow:hidden;min-width:0;min-height:610px;display:flex;flex-direction:column}
+.conversation-heading{padding:22px 26px 18px;border-bottom:1px solid #eee8e2}
+.conversation-heading h1{font-size:26px;color:#292421;margin-bottom:5px}
+.conversation-heading p{font-size:13px;color:#8b8178}
+.chat-user{display:flex;align-items:center;gap:12px;padding:15px 25px;background:#fbf9f6;border-bottom:1px solid #eee8e2}
+.avatar{width:44px;height:44px;flex:0 0 44px;border-radius:50%;background:#b18b68;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:bold}
+.chat-user h2{font-size:15px;color:#302923}
+.chat-user p{font-size:12px;color:#8a8178;margin-top:4px}
+.chat-content{height:390px;overflow-y:auto;padding:24px 26px;display:flex;flex-direction:column;gap:15px;background:#fff}
+.message{max-width:min(75%,520px);padding:12px 15px;border-radius:16px;font-size:14px;line-height:1.5;overflow-wrap:anywhere;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.message.received{align-self:flex-start;background:#f1eeea;color:#403830;border-bottom-left-radius:5px}
+.message.sent{align-self:flex-end;background:#9b6636;color:#fff;border-bottom-right-radius:5px}
+.message small{display:block;font-size:10px;opacity:.72;margin-top:5px;text-align:right}
+.chat-compose{display:flex;gap:12px;padding:17px 22px;border-top:1px solid #eee8e2;background:#fff;margin-top:auto}
+.chat-compose input{flex:1;min-width:0;border:1px solid #ded7d0;border-radius:24px;padding:13px 17px;font-size:14px;outline:none}
+.chat-compose input:focus{border-color:#b47b45;box-shadow:0 0 0 3px rgba(180,123,69,.12)}
+.chat-compose button{border:0;border-radius:22px;background:#292421;color:#fff;padding:0 24px;font-weight:bold;cursor:pointer}
+.chat-compose button:hover{background:#9b6636}
+.sidebar{display:flex;flex-direction:column;gap:22px;min-width:0}
+.people-panel,.categories-panel{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(48,36,27,.09);padding:19px}
+.panel-title{font-size:19px;color:#292421;margin-bottom:5px}
+.panel-subtitle{font-size:12px;color:#8b8178;line-height:1.4;margin-bottom:14px}
+.people-list{display:flex;flex-direction:column;gap:5px}
+.person{display:flex;align-items:center;gap:11px;width:100%;padding:10px;border:0;border-radius:10px;background:#fff;text-align:left;cursor:pointer;transition:background .15s}
+.person:hover,.person.active{background:#f5eee7}
+.person .avatar{width:40px;height:40px;flex-basis:40px;font-size:13px}
+.person-copy{flex:1;min-width:0}
+.person-copy strong{display:block;color:#302923;font-size:13px}
+.person-copy span{display:block;color:#8a8178;font-size:11px;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.online-dot{width:8px;height:8px;border-radius:50%;background:#69a875;flex:0 0 8px}
+.category-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.category-card{display:block;width:100%;overflow:hidden;border:2px solid transparent;border-radius:9px;background:#faf8f5;padding:0;text-align:left;cursor:pointer;transition:.18s}
+.category-card:hover,.category-card.active{border-color:#b47b45;transform:translateY(-2px)}
+.category-card img{display:block;width:100%;height:92px;object-fit:cover}
+.category-card span{display:block;padding:9px 8px;color:#40352d;font-size:12px;font-weight:bold}
+.clear-filter{border:0;background:none;color:#9b6636;font-size:12px;font-weight:bold;cursor:pointer;margin-top:13px}
+@media(max-width:900px){.navbar{grid-template-columns:1fr 1fr;gap:12px}.search-wrap{grid-column:1/-1;grid-row:2}.nav-links{gap:8px}.page{grid-template-columns:minmax(0,1fr) 280px;gap:18px;padding:0 15px}}
+@media(max-width:680px){.navbar{display:flex;flex-wrap:wrap;gap:12px}.profile-logo{width:100%}.search-wrap{width:100%;order:3}.nav-links{width:100%;justify-content:space-between;flex-wrap:wrap}.nav-links a{font-size:12px;padding:8px}.page{display:flex;flex-direction:column;margin:20px auto}.conversation,.sidebar{width:100%}.sidebar{order:2}.chat-content{height:340px;padding:18px}.message{max-width:88%}.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<nav class="navbar">
+<a href="profile.html" class="profile-logo">👤 Profile</a>
+  <div class="search-wrap"><span>⌕</span><input id="peopleSearch" type="search" placeholder="Search people or messages..." aria-label="Search people or messages"></div>
+  <div class="nav-links">
+    <a href="art_gallery_updated.html">Art Gallery</a>
+    <a href="commission.html">Commissions</a>
+    <a href="messages.html" class="active" aria-current="page">Messages</a>
+    <a href="transaction.html">Transactions</a>
+  </div>
+</nav>
+<main class="page">
+  <section class="conversation" aria-label="Conversation">
+    <header class="conversation-heading"><h1>Messages</h1><p></p></header>
+    <div class="chat-user">
+      <div class="avatar" id="activeAvatar">JD</div>
+      <div><h2 id="activeName">John David</h2><p id="activeStatus">Active now</p></div>
+    </div>
+    <div class="chat-content" id="chatContent" aria-live="polite">
+      <div class="message received">Hi! Thanks for checking out my artwork. Let me know if you have any questions.<small>10:24 AM</small></div>
+      <div class="message sent">Hello! I really like your abstract painting. Is it still available?<small>10:26 AM</small></div>
+      <div class="message received">Yes, it is! I can also share more details about the piece.<small>10:27 AM</small></div>
+    </div>
+    <form class="chat-compose" id="messageForm">
+      <input id="messageInput" type="text" placeholder="Write a message..." autocomplete="off" aria-label="Write a message">
+      <button type="submit">Send</button>
+    </form>
+  </section>
+
+  <aside class="sidebar">
+    <section class="people-panel">
+      <h2 class="panel-title">People</h2>
+      <p class="panel-subtitle">Select a profile to open a conversation</p>
+      <div class="people-list" id="peopleList">
+        <button class="person active" data-name="John David" data-initials="JD" data-status="Active now"><span class="avatar">JD</span><span class="person-copy"><strong>John David</strong><span>Hi! Thanks for checking out...</span></span><i class="online-dot"></i></button>
+        <button class="person" data-name="Sophia Martinez" data-initials="SM" data-status="Active 15 minutes ago"><span class="avatar">SM</span><span class="person-copy"><strong>Sophia Martinez</strong><span>Thank you for your interest!</span></span></button>
+        <button class="person" data-name="Maria Santos" data-initials="MS" data-status="Active 1 hour ago"><span class="avatar">MS</span><span class="person-copy"><strong>Maria Santos</strong><span>Can you send the artwork details?</span></span></button>
+        <button class="person" data-name="Alex Rivera" data-initials="AR" data-status="Away"><span class="avatar">AR</span><span class="person-copy"><strong>Alex Rivera</strong><span>I love your recent collection.</span></span></button>
+        <button class="person" data-name="Daniel Cruz" data-initials="DC" data-status="Active yesterday"><span class="avatar">DC</span><span class="person-copy"><strong>Daniel Cruz</strong><span>Is this piece available?</span></span></button>
+      </div>
+    </section>
+
+    <section class="categories-panel">
+      <h2 class="panel-title">Art Categories</h2>
+      <p class="panel-subtitle">Browse artworks by category</p>
+      <div class="category-grid">
+        <button class="category-card" type="button"><img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400" alt="Traditional artwork"><span>Traditional Art</span></button>
+        <button class="category-card" type="button"><img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400" alt="Digital artwork"><span>Digital Art</span></button>
+        <button class="category-card" type="button"><img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=400" alt="Abstract artwork"><span>Abstract Art</span></button>
+        <button class="category-card" type="button"><img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=400" alt="Photography"><span>Photography</span></button>
+        <button class="category-card" type="button"><img src="https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?w=400" alt="Modern artwork"><span>Modern Art</span></button>
+        <button class="category-card" type="button"><img src="https://images.unsplash.com/photo-1549490349-8643362247b5?w=400" alt="Contemporary artwork"><span>Contemporary Art</span></button>
+      </div>
+      <button class="clear-filter" id="clearCategories" type="button">Clear category selection</button>
+    </section>
+  </aside>
+</main>
+<script>
+const conversations={
+ "John David":[["received","Hi! Thanks for checking out my artwork. Let me know if you have any questions.","10:24 AM"],["sent","Hello! I really like your abstract painting. Is it still available?","10:26 AM"],["received","Yes, it is! I can also share more details about the piece.","10:27 AM"]],
+ "Sophia Martinez":[["received","Thank you for your interest! I would be happy to tell you more about my traditional artwork.","Yesterday"]],
+ "Maria Santos":[["received","Can you send the artwork details? I am interested in learning more.","Yesterday"]],
+ "Alex Rivera":[["received","I love your recent collection. The colors are beautiful!","Monday"]],
+ "Daniel Cruz":[["received","Is this piece available? I would like to know more about it.","Monday"]]
+};
+const chat=document.getElementById("chatContent");
+const activeName=document.getElementById("activeName");
+function addBubble(type,text,time){const bubble=document.createElement("div");bubble.className="message "+type;bubble.append(document.createTextNode(text));const stamp=document.createElement("small");stamp.textContent=time;bubble.append(stamp);chat.append(bubble)}
+function openConversation(person){
+ document.querySelectorAll(".person").forEach(p=>p.classList.toggle("active",p===person));
+ activeName.textContent=person.dataset.name;document.getElementById("activeAvatar").textContent=person.dataset.initials;document.getElementById("activeStatus").textContent=person.dataset.status;
+ chat.innerHTML="";(conversations[person.dataset.name]||[]).forEach(m=>addBubble(m[0],m[1],m[2]));chat.scrollTop=chat.scrollHeight;
+}
+document.querySelectorAll(".person").forEach(p=>p.addEventListener("click",()=>openConversation(p)));
+document.getElementById("messageForm").addEventListener("submit",e=>{
+ e.preventDefault();const input=document.getElementById("messageInput"),value=input.value.trim();if(!value)return;
+ const name=activeName.textContent,time=new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
+ conversations[name]=conversations[name]||[];conversations[name].push(["sent",value,time]);addBubble("sent",value,time);input.value="";chat.scrollTop=chat.scrollHeight;
+});
+document.getElementById("peopleSearch").addEventListener("input",e=>{
+ const q=e.target.value.toLowerCase();
+ document.querySelectorAll(".person").forEach(p=>p.style.display=p.textContent.toLowerCase().includes(q)?"flex":"none");
+});
+document.querySelectorAll(".category-card").forEach(c=>c.addEventListener("click",()=>{document.querySelectorAll(".category-card").forEach(x=>x.classList.toggle("active",x===c))}));
+document.getElementById("clearCategories").addEventListener("click",()=>document.querySelectorAll(".category-card").forEach(c=>c.classList.remove("active")));
+</script>
+</body>
+</html>

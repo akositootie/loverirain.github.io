@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Messages & Support | Admin Console</title><style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+body{background:#f4f1ed;color:#332d28}
+.navbar{min-height:70px;background:#292421;padding:12px 4%;display:flex;align-items:center;justify-content:space-between;gap:18px;position:sticky;top:0;z-index:20;flex-wrap:wrap}
+.brand{color:#fff;text-decoration:none;font-size:20px;font-weight:800;white-space:nowrap}
+.admin-tag{font-size:10px;letter-spacing:1px;color:#f0c28f;border:1px solid #8b6748;padding:5px 8px;border-radius:12px;margin-left:8px}
+.nav-links{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.nav-links a{color:#eee;text-decoration:none;font-size:13px;padding:9px 12px;border-radius:20px;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{background:#9b6636;color:#fff}
+.nav-right{display:flex;align-items:center;gap:12px;color:#eee;font-size:12px}
+.admin-avatar{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#b47b45;color:#fff;font-weight:bold}
+.wrap{max-width:1300px;margin:28px auto;padding:0 22px}
+.heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.heading h1{font-size:27px;color:#292421;margin-bottom:6px}
+.heading p{font-size:13px;color:#887d73}
+.eyebrow{font-size:10px;letter-spacing:1.5px;color:#9b6636;font-weight:bold;margin-bottom:7px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat,.panel,.item{background:#fff;border-radius:13px;box-shadow:0 3px 14px rgba(48,36,27,.07)}
+.stat{padding:17px 18px}.stat span{font-size:12px;color:#887d73}.stat strong{display:block;font-size:25px;color:#292421;margin:8px 0 3px}.stat small{font-size:11px;color:#9b6636}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+input,select,textarea{font:inherit}
+.search,.filter{border:1px solid #e1d8cf;border-radius:9px;background:#fff;padding:11px 13px;font-size:13px;color:#403830;outline:none}
+.search{flex:1;min-width:200px}.filter{min-width:145px}
+.btn{border:0;border-radius:20px;padding:10px 16px;font-size:12px;font-weight:bold;cursor:pointer;background:#292421;color:#fff}
+.btn:hover{background:#9b6636}.btn.light{background:#f5eee7;color:#80532d;border:1px solid #e4d5c6}.btn.danger{background:#9b3f32}.btn.success{background:#49734f}
+.btn.small{padding:8px 12px;font-size:11px}
+.table-wrap{overflow-x:auto;background:#fff;border-radius:13px;box-shadow:0 3px 14px rgba(48,36,27,.07)}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{text-align:left;padding:14px 16px;border-bottom:1px solid #f0ebe6;font-size:12px}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#887d73;background:#fbf9f6}
+td{color:#4c423a}tr:last-child td{border-bottom:0}
+.status{display:inline-block;border-radius:20px;padding:5px 9px;font-size:10px;font-weight:bold;background:#f5eee7;color:#80532d}
+.status.pending{background:#fff1d9;color:#8a5b13}.status.approved,.status.completed{background:#e8f3e9;color:#3f7146}.status.flagged,.status.disputed{background:#f9e8e5;color:#9b3f32}.status.processing{background:#e9eff7;color:#45617f}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.item{overflow:hidden}.item-body{padding:16px}.item h3{font-size:16px;color:#302923;margin-bottom:6px}.muted{font-size:12px;color:#887d73;line-height:1.5}
+.item-foot{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid #f0ebe6}
+.thumb{width:100%;height:190px;object-fit:cover;display:block;background:#eee}
+.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);gap:18px;align-items:start}
+.panel{padding:18px}.panel h2{font-size:17px;color:#292421;margin-bottom:13px}
+.audit{display:flex;flex-direction:column;gap:12px}.audit-row{border-bottom:1px solid #eee8e2;padding-bottom:11px}.audit-row:last-child{border:0;padding:0}.audit-row strong{font-size:12px}.audit-row p{font-size:11px;color:#887d73;margin-top:4px;line-height:1.45}
+.note{padding:12px 14px;background:#f8f3ed;border-left:3px solid #b47b45;border-radius:7px;color:#70563f;font-size:11px;line-height:1.5;margin-top:12px}
+.chat-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:16px}
+.people{display:flex;flex-direction:column;gap:6px}.person{width:100%;border:0;background:#fff;text-align:left;padding:12px;border-radius:9px;cursor:pointer}.person.active,.person:hover{background:#f5eee7}.person strong{font-size:12px}.person small{display:block;color:#887d73;font-size:10px;margin-top:4px}
+.chat{min-height:450px;display:flex;flex-direction:column}.chat-head{padding-bottom:12px;border-bottom:1px solid #eee8e2}.messages{flex:1;padding:18px 0;display:flex;flex-direction:column;gap:10px}.bubble{max-width:75%;padding:10px 13px;border-radius:13px;background:#f1eeea;font-size:12px;line-height:1.5}.bubble.admin{align-self:flex-end;background:#9b6636;color:white}.bubble small{display:block;font-size:9px;opacity:.7;margin-top:5px;text-align:right}.compose{display:flex;gap:8px;border-top:1px solid #eee8e2;padding-top:13px}.compose input{flex:1;min-width:0;border:1px solid #e1d8cf;border-radius:20px;padding:11px 13px;font-size:12px}
+@media(max-width:850px){.stats{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr}.chat-layout{grid-template-columns:1fr}.people{display:grid;grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.wrap{padding:0 13px;margin:20px auto}.navbar{align-items:flex-start}.nav-links{order:3;width:100%}.nav-links a{font-size:11px;padding:8px}.nav-right{margin-left:auto}.stats{gap:9px}.stat{padding:13px}.stat strong{font-size:21px}.grid{grid-template-columns:1fr}.heading h1{font-size:23px}}
+</style></head><body>
+<nav class="navbar">
+<a class="brand" href="admin_art_gallery.html">ART GALLERY <span class="admin-tag">ADMIN CONSOLE</span></a>
+<div class="nav-links">
+<a href="admin_art_gallery.html" >Art Gallery</a>
+<a href="admin_commissions.html" >Commissions</a>
+<a href="admin_messages.html" class="active" aria-current="page">Messages</a>
+<a href="admin_transactions.html" >Transactions</a>
+</div>
+<div class="nav-right"><span class="admin-avatar">A</span><span>Administrator<br><b>Admin account</b></span><a class="btn small light" href="login.html" style="text-decoration:none">Log out</a></div>
+</nav>
+
+<main class="wrap">
+<div class="heading"><div><div class="eyebrow">CUSTOMER SUPPORT</div><h1>Messages & Support Inbox</h1></div><button class="btn light" onclick="alert('Demo: support inbox report')">Export inbox</button></div>
+<section class="stats"><div class="stat"><span>Open conversations</span><strong>18</strong><small>Across support inbox</small></div><div class="stat"><span>Unread</span><strong>6</strong><small>Awaiting response</small></div><div class="stat"><span>Priority cases</span><strong>2</strong><small>Escalated issues</small></div><div class="stat"><span>Resolved today</span><strong>11</strong><small>Support activity</small></div></section>
+<div class="chat-layout">
+<aside class="panel"><h2>Support conversations</h2><div class="toolbar"><input class="search" id="personSearch" placeholder="Find conversation..."></div><div class="people" id="people"><button class="person active" onclick="choose(this,'Sophia Martinez','Commission request COM-2081')"><strong>Sophia Martinez</strong><small>Commission request · 10:42 AM</small></button><button class="person" onclick="choose(this,'Marco Reyes','Payment confirmation')"><strong>Marco Reyes</strong><small>Payment confirmation · Yesterday</small></button><button class="person" onclick="choose(this,'Andrea Lopez','Dispute COM-2069')"><strong>Andrea Lopez</strong><small>Dispute · Yesterday</small></button><button class="person" onclick="choose(this,'Noah Reyes','Account verification')"><strong>Noah Reyes</strong><small>Account verification · Nov 4</small></button></div></aside>
+<section class="panel chat"><div class="chat-head"><h2 id="chatName">Sophia Martinez</h2><p class="muted" id="chatMeta">Commission request COM-2081 · Support queue</p></div><div class="messages" id="messages"><div class="bubble">Hello, I submitted a commission request and wanted to know when it will be reviewed.<small>Customer · 10:38 AM</small></div><div class="bubble admin">Thanks for contacting Art Gallery Support. Your request is in the review queue. We’ll update you once it has been checked.<small>Admin Support · 10:42 AM</small></div></div><form class="compose" id="replyForm"><input id="reply" placeholder="Reply as Art Gallery Support..." required><button class="btn">Send reply</button></form></section>
+</div>
+<p class="note">This is a support inbox mock-up with sample conversations. In production, admins should only access conversations needed for support, with role-based permissions and an audit trail. Do not expose private messages to every admin by default.</p>
+</main>
+<script>
+function choose(btn,name,meta){document.querySelectorAll('.person').forEach(x=>x.classList.remove('active'));btn.classList.add('active');document.getElementById('chatName').textContent=name;document.getElementById('chatMeta').textContent=meta+' · Support queue';document.getElementById('messages').innerHTML='<div class="bubble">This is a sample support conversation for '+name+'.<small>Customer · Recent</small></div><div class="bubble admin">You are viewing the support queue. Reply as Art Gallery Support.<small>Admin Support</small></div>';}
+document.getElementById('replyForm').addEventListener('submit',e=>{e.preventDefault();const input=document.getElementById('reply');const b=document.createElement('div');b.className='bubble admin';b.textContent=input.value;const sm=document.createElement('small');sm.textContent='Admin Support · just now';b.appendChild(sm);document.getElementById('messages').appendChild(b);input.value='';});
+document.getElementById('personSearch').addEventListener('input',e=>document.querySelectorAll('.person').forEach(p=>p.style.display=p.innerText.toLowerCase().includes(e.target.value.toLowerCase())?'':'none'));
+</script></body></html>

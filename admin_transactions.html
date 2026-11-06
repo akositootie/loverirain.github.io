@@ -1,0 +1,74 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Transactions Management | Admin Console</title><style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+body{background:#f4f1ed;color:#332d28}
+.navbar{min-height:70px;background:#292421;padding:12px 4%;display:flex;align-items:center;justify-content:space-between;gap:18px;position:sticky;top:0;z-index:20;flex-wrap:wrap}
+.brand{color:#fff;text-decoration:none;font-size:20px;font-weight:800;white-space:nowrap}
+.admin-tag{font-size:10px;letter-spacing:1px;color:#f0c28f;border:1px solid #8b6748;padding:5px 8px;border-radius:12px;margin-left:8px}
+.nav-links{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.nav-links a{color:#eee;text-decoration:none;font-size:13px;padding:9px 12px;border-radius:20px;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{background:#9b6636;color:#fff}
+.nav-right{display:flex;align-items:center;gap:12px;color:#eee;font-size:12px}
+.admin-avatar{width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#b47b45;color:#fff;font-weight:bold}
+.wrap{max-width:1300px;margin:28px auto;padding:0 22px}
+.heading{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.heading h1{font-size:27px;color:#292421;margin-bottom:6px}
+.heading p{font-size:13px;color:#887d73}
+.eyebrow{font-size:10px;letter-spacing:1.5px;color:#9b6636;font-weight:bold;margin-bottom:7px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat,.panel,.item{background:#fff;border-radius:13px;box-shadow:0 3px 14px rgba(48,36,27,.07)}
+.stat{padding:17px 18px}.stat span{font-size:12px;color:#887d73}.stat strong{display:block;font-size:25px;color:#292421;margin:8px 0 3px}.stat small{font-size:11px;color:#9b6636}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+input,select,textarea{font:inherit}
+.search,.filter{border:1px solid #e1d8cf;border-radius:9px;background:#fff;padding:11px 13px;font-size:13px;color:#403830;outline:none}
+.search{flex:1;min-width:200px}.filter{min-width:145px}
+.btn{border:0;border-radius:20px;padding:10px 16px;font-size:12px;font-weight:bold;cursor:pointer;background:#292421;color:#fff}
+.btn:hover{background:#9b6636}.btn.light{background:#f5eee7;color:#80532d;border:1px solid #e4d5c6}.btn.danger{background:#9b3f32}.btn.success{background:#49734f}
+.btn.small{padding:8px 12px;font-size:11px}
+.table-wrap{overflow-x:auto;background:#fff;border-radius:13px;box-shadow:0 3px 14px rgba(48,36,27,.07)}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{text-align:left;padding:14px 16px;border-bottom:1px solid #f0ebe6;font-size:12px}
+th{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#887d73;background:#fbf9f6}
+td{color:#4c423a}tr:last-child td{border-bottom:0}
+.status{display:inline-block;border-radius:20px;padding:5px 9px;font-size:10px;font-weight:bold;background:#f5eee7;color:#80532d}
+.status.pending{background:#fff1d9;color:#8a5b13}.status.approved,.status.completed{background:#e8f3e9;color:#3f7146}.status.flagged,.status.disputed{background:#f9e8e5;color:#9b3f32}.status.processing{background:#e9eff7;color:#45617f}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.item{overflow:hidden}.item-body{padding:16px}.item h3{font-size:16px;color:#302923;margin-bottom:6px}.muted{font-size:12px;color:#887d73;line-height:1.5}
+.item-foot{display:flex;gap:8px;flex-wrap:wrap;padding:12px 16px;border-top:1px solid #f0ebe6}
+.thumb{width:100%;height:190px;object-fit:cover;display:block;background:#eee}
+.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.8fr);gap:18px;align-items:start}
+.panel{padding:18px}.panel h2{font-size:17px;color:#292421;margin-bottom:13px}
+.audit{display:flex;flex-direction:column;gap:12px}.audit-row{border-bottom:1px solid #eee8e2;padding-bottom:11px}.audit-row:last-child{border:0;padding:0}.audit-row strong{font-size:12px}.audit-row p{font-size:11px;color:#887d73;margin-top:4px;line-height:1.45}
+.note{padding:12px 14px;background:#f8f3ed;border-left:3px solid #b47b45;border-radius:7px;color:#70563f;font-size:11px;line-height:1.5;margin-top:12px}
+.chat-layout{display:grid;grid-template-columns:280px minmax(0,1fr);gap:16px}
+.people{display:flex;flex-direction:column;gap:6px}.person{width:100%;border:0;background:#fff;text-align:left;padding:12px;border-radius:9px;cursor:pointer}.person.active,.person:hover{background:#f5eee7}.person strong{font-size:12px}.person small{display:block;color:#887d73;font-size:10px;margin-top:4px}
+.chat{min-height:450px;display:flex;flex-direction:column}.chat-head{padding-bottom:12px;border-bottom:1px solid #eee8e2}.messages{flex:1;padding:18px 0;display:flex;flex-direction:column;gap:10px}.bubble{max-width:75%;padding:10px 13px;border-radius:13px;background:#f1eeea;font-size:12px;line-height:1.5}.bubble.admin{align-self:flex-end;background:#9b6636;color:white}.bubble small{display:block;font-size:9px;opacity:.7;margin-top:5px;text-align:right}.compose{display:flex;gap:8px;border-top:1px solid #eee8e2;padding-top:13px}.compose input{flex:1;min-width:0;border:1px solid #e1d8cf;border-radius:20px;padding:11px 13px;font-size:12px}
+@media(max-width:850px){.stats{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr}.chat-layout{grid-template-columns:1fr}.people{display:grid;grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.wrap{padding:0 13px;margin:20px auto}.navbar{align-items:flex-start}.nav-links{order:3;width:100%}.nav-links a{font-size:11px;padding:8px}.nav-right{margin-left:auto}.stats{gap:9px}.stat{padding:13px}.stat strong{font-size:21px}.grid{grid-template-columns:1fr}.heading h1{font-size:23px}}
+</style></head><body>
+<nav class="navbar">
+<a class="brand" href="admin_art_gallery.html">ART GALLERY <span class="admin-tag">ADMIN CONSOLE</span></a>
+<div class="nav-links">
+<a href="admin_art_gallery.html" >Art Gallery</a>
+<a href="admin_commissions.html" >Commissions</a>
+<a href="admin_messages.html" >Messages</a>
+<a href="admin_transactions.html" class="active" aria-current="page">Transactions</a>
+</div>
+<div class="nav-right"><span class="admin-avatar">A</span><span>Administrator<br><b>Admin account</b></span><a class="btn small light" href="login.html" style="text-decoration:none">Log out</a></div>
+</nav>
+
+<main class="wrap">
+<div class="heading"><div><div class="eyebrow">FINANCE & ORDER CONTROL</div><h1>Transactions Management</h1></div><button class="btn" onclick="alert('Demo: transaction report exported')">Export transactions</button></div>
+<section class="stats"><div class="stat"><span>Gross transaction value</span><strong>₱248,650</strong><small>Sample period: November 2026</small></div><div class="stat"><span>Platform fees</span><strong>₱24,865</strong><small>Illustrative 10% total</small></div><div class="stat"><span>Pending payouts</span><strong>₱18,400</strong><small>Awaiting settlement</small></div><div class="stat"><span>Refund / dispute cases</span><strong>5</strong><small>Needs review</small></div></section>
+<div class="toolbar"><input class="search" id="txSearch" placeholder="Search transaction ID, buyer, or seller..."><select class="filter" id="txFilter"><option value="">All statuses</option><option>Paid</option><option>Pending</option><option>Refund Requested</option><option>Disputed</option><option>Paid Out</option></select><select class="filter"><option>All payment methods</option><option>Card</option><option>E-wallet</option><option>Bank transfer</option></select></div>
+<div class="table-wrap"><table id="txTable"><thead><tr><th>Transaction ID</th><th>Artwork / Order</th><th>Buyer</th><th>Seller</th><th>Amount</th><th>Platform fee</th><th>Status</th><th>Action</th></tr></thead><tbody>
+<tr><td><b>TXN-80931</b><br>Nov 6, 2026</td><td>Quiet Afternoon</td><td>Paolo Lim</td><td>Lara Mendoza</td><td>₱8,500</td><td>₱850</td><td><span class="status paid">Paid</span></td><td><button class="btn light small" onclick="alert('Demo: transaction detail')">Details</button></td></tr>
+<tr><td><b>TXN-80918</b><br>Nov 5, 2026</td><td>Fantasy portrait</td><td>Sophia Martinez</td><td>Mia Santos</td><td>₱2,000</td><td>₱200</td><td><span class="status pending">Pending</span></td><td><button class="btn small" onclick="setTx(this,'Paid Out')">Mark settled</button></td></tr>
+<tr><td><b>TXN-80877</b><br>Nov 4, 2026</td><td>Mountain landscape</td><td>Marco Reyes</td><td>Elena Garcia</td><td>₱4,200</td><td>₱420</td><td><span class="status disputed">Disputed</span></td><td><button class="btn danger small" onclick="alert('Demo: open dispute case')">Review case</button></td></tr>
+<tr><td><b>TXN-80861</b><br>Nov 3, 2026</td><td>Dog watercolor</td><td>Andrea Lopez</td><td>Rina Flores</td><td>₱1,200</td><td>₱120</td><td><span class="status pending">Refund Requested</span></td><td><button class="btn light small" onclick="setTx(this,'Refund Requested')">Review refund</button></td></tr>
+</tbody></table></div>
+<p class="note">Amounts and fee totals are illustrative sample data, not live financial records. Never issue refunds, release payouts, or edit balances from a browser-only page; require authenticated server-side authorization, payment-provider verification, and immutable audit logs.</p>
+</main>
+<script>
+function setTx(btn,s){if(!confirm('Update this transaction to '+s+'?'))return;const row=btn.closest('tr');const badge=row.querySelector('.status');badge.textContent=s;badge.className='status '+(s==='Paid Out'?'completed':'pending');btn.textContent='Updated';btn.disabled=true;}
+const q=document.getElementById('txSearch'),f=document.getElementById('txFilter');function filterTx(){document.querySelectorAll('#txTable tbody tr').forEach(r=>{r.style.display=r.innerText.toLowerCase().includes(q.value.toLowerCase())&&(!f.value||r.innerText.includes(f.value))?'':'none'});}q.addEventListener('input',filterTx);f.addEventListener('change',filterTx);
+</script></body></html>

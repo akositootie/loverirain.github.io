@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profile - Art Gallery</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+body{background:#f4f1ed;color:#332d28}
+.panel-heading-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.logoutlink{color:#8a542b;text-decoration:none;font-size:21px;font-weight:450;white-space:nowrap}
+
+.logout-button {
+  border: 1px solid #b47b45;
+  border-radius: 20px;
+  background: white;
+  color: #8a542b;
+  padding: 9px 15px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-button:hover {
+  background: #9b6636;
+  color: white;
+}
+.navbar{min-height:68px;background:#292421;padding:12px 4%;display:grid;grid-template-columns:1fr minmax(250px,400px) 1fr;align-items:center;gap:28px;position:sticky;top:0;z-index:10}
+.profile-logo{color:#fff;text-decoration:none;font-size:21px;font-weight:700;white-space:nowrap}
+.search-wrap{position:relative}.search-wrap span{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:#777}
+.search-wrap input{width:100%;border:0;border-radius:24px;padding:12px 18px 12px 40px;background:#fff;font-size:14px;outline:none}
+.nav-links{display:flex;justify-content:flex-end;align-items:center;gap:15px}
+.nav-links a{color:#fff;text-decoration:none;font-size:14px;white-space:nowrap;padding:9px 12px;border-radius:20px}
+.nav-links a:hover{color:#e0b27d}.nav-links a.active{background:#9b6636;color:#fff;font-weight:bold}
+.page{max-width:1240px;margin:32px auto;padding:0 22px;display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.5fr);gap:28px;align-items:start}
+.panel{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(48,36,27,.09);overflow:hidden}
+.panel-heading{padding:20px 22px;border-bottom:1px solid #eee8e2}
+.panel-heading h1,.panel-heading h2{font-size:22px;color:#292421;margin-bottom:5px}
+.panel-heading p{font-size:12px;color:#8b8178;line-height:1.5}
+.profile-content{padding:21px}
+.photo-section{display:flex;flex-direction:column;align-items:center;padding:3px 0 21px;border-bottom:1px solid #eee8e2;margin-bottom:18px}
+.profile-photo{width:118px;height:118px;border-radius:50%;object-fit:cover;background:#e9dfd5;border:4px solid #f3e9df}
+.photo-placeholder{width:118px;height:118px;border-radius:50%;background:#b18b68;color:#fff;display:flex;align-items:center;justify-content:center;font-size:35px;font-weight:bold;border:4px solid #f3e9df}
+.photo-button{display:inline-block;margin-top:12px;padding:9px 16px;background:#f5eee7;color:#80532d;border-radius:20px;font-size:12px;font-weight:bold;cursor:pointer}
+.photo-button input{display:none}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:bold;color:#66594f;margin-bottom:7px}
+.field input,.field textarea{width:100%;border:1px solid #e2dbd4;border-radius:8px;padding:11px 12px;font-size:13px;color:#403830;background:#fff;outline:none}
+.field input:focus,.field textarea:focus{border-color:#b47b45;box-shadow:0 0 0 3px rgba(180,123,69,.10)}
+.field textarea{resize:vertical;min-height:84px;line-height:1.5}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.age-display{background:#f8f5f1;color:#766b62;border:1px solid #eee8e2;border-radius:8px;padding:11px 12px;font-size:13px;min-height:39px}
+.save-button{width:100%;border:0;border-radius:22px;background:#292421;color:#fff;padding:12px 18px;font-size:13px;font-weight:bold;cursor:pointer;margin-top:4px}
+.save-button:hover{background:#9b6636}
+.save-note{font-size:11px;color:#64815e;text-align:center;margin-top:9px;min-height:14px}
+.artwork-content{padding:20px}
+.upload-box{border:1.5px dashed #cdb9a5;border-radius:12px;background:#fbf9f6;padding:19px;display:flex;align-items:center;gap:16px;margin-bottom:22px}
+.upload-icon{width:46px;height:46px;flex:0 0 46px;border-radius:50%;background:#f0e5d9;color:#9b6636;display:flex;align-items:center;justify-content:center;font-size:24px}
+.upload-copy{flex:1;min-width:0}.upload-copy h3{font-size:14px;color:#40352d;margin-bottom:5px}.upload-copy p{font-size:11px;color:#8b8178;line-height:1.4}
+.choose-file{display:inline-block;background:#292421;color:#fff;padding:10px 15px;border-radius:20px;font-size:11px;font-weight:bold;cursor:pointer;white-space:nowrap}
+.choose-file:hover{background:#9b6636}.choose-file input{display:none}
+.upload-form{display:none;margin:-8px 0 22px;padding:15px;background:#fbf9f6;border-radius:10px}
+.upload-form input{width:100%;border:1px solid #e2dbd4;border-radius:8px;padding:10px;margin-bottom:10px;font-size:12px}
+.upload-form img{display:none;max-width:100%;max-height:220px;object-fit:contain;border-radius:8px;margin-bottom:10px}
+.upload-actions{display:flex;justify-content:flex-end;gap:8px}
+.upload-actions button{border:0;border-radius:18px;padding:9px 15px;font-size:11px;font-weight:bold;cursor:pointer}
+.cancel-upload{background:#eee8e2;color:#66594f}.publish-upload{background:#9b6636;color:#fff}
+.section-title{font-size:16px;color:#302923;margin-bottom:14px}
+.artwork-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.artwork-card{border:1px solid #eee8e2;border-radius:11px;overflow:hidden;background:#fff}
+.artwork-card img{display:block;width:100%;height:190px;object-fit:cover}
+.artwork-info{padding:12px}
+.artwork-info strong{display:block;font-size:13px;color:#302923}
+.artwork-info span{display:block;font-size:11px;color:#8b8178;margin-top:5px}
+.empty-art{display:none;grid-column:1/-1;text-align:center;padding:30px 15px;background:#fbf9f6;border-radius:10px;color:#8b8178;font-size:13px}
+@media(max-width:900px){.navbar{grid-template-columns:1fr 1fr;gap:12px}.search-wrap{grid-column:1/-1;grid-row:2}.nav-links{gap:6px}.page{grid-template-columns:minmax(280px,.9fr) minmax(0,1.1fr);gap:16px;padding:0 15px}}
+@media(max-width:680px){.navbar{display:flex;flex-wrap:wrap;gap:12px}.profile-logo,.search-wrap,.nav-links{width:100%}.search-wrap{order:3}.nav-links{justify-content:space-between;flex-wrap:wrap}.nav-links a{font-size:12px;padding:8px}.page{display:flex;flex-direction:column;margin:20px auto}.profile-panel,.artworks-panel{width:100%}
+
+}
+@media(max-width:430px){.field-row{grid-template-columns:1fr}.upload-box{align-items:flex-start;flex-wrap:wrap}.artwork-grid{grid-template-columns:1fr}.artwork-card img{height:220px}}
+</style>
+</head>
+<body>
+<nav class="navbar">
+<a href="profile.html" class="profile-logo">👤 Profile</a>
+<div class="search-wrap"><span>⌕</span><input id="profileSearch" type="search" placeholder="Search your artworks..." aria-label="Search your artworks"></div>
+<div class="nav-links">
+<a href="art_gallery_updated.html">Art Gallery</a>
+<a href="commission.html">Commissions</a>
+<a href="messages.html">Messages</a>
+<a href="transaction.html">Transactions</a>
+</div>
+</nav>
+
+<main class="page">
+<section class="panel profile-panel">
+<header class="panel-heading">
+  <div class="panel-heading-top">
+    <div>
+      <h1>My Profile</h1>
+      <p>Manage your personal information and profile photo.</p>
+    </div>
+    <button type="button" class="logout-button" id="logoutButton"><a class="logoutlink "href="login.html">Log Out
+	</a>
+    </button>
+  </div>
+</header>
+<div class="profile-content">
+<div class="photo-section">
+<div id="photoPlaceholder" class="photo-placeholder">JD</div>
+<img id="profilePhoto" class="profile-photo" alt="Your profile photo" style="display:none">
+<label class="photo-button">Change profile photo<input type="file" id="photoInput" accept="image/*"></label>
+</div>
+<form id="profileForm">
+<div class="field"><label for="bio">Bio</label><textarea id="bio" placeholder="Tell people a little about yourself...">Artist and art enthusiast. I love creating and collecting unique pieces.</textarea></div>
+<div class="field-row">
+<div class="field"><label for="firstName">First Name</label><input id="firstName" type="text" value="John"></div>
+<div class="field"><label for="lastName">Last Name</label><input id="lastName" type="text" value="Doe"></div>
+</div>
+<div class="field-row">
+<div class="field"><label for="birthdate">Birthdate</label><input id="birthdate" type="date" value="2000-01-15"></div>
+<div class="field"><label>Age</label><div class="age-display" id="ageDisplay">26 years old</div></div>
+</div>
+<div class="field"><label for="email">Email</label><input id="email" type="email" value="johndoe@email.com"></div>
+<div class="field"><label for="contact">Contact Number</label><input id="contact" type="tel" value="+63 912 345 6789"></div>
+<button class="save-button" type="submit">Save Changes</button>
+<p class="save-note" id="saveNote" aria-live="polite"></p>
+</form>
+</div>
+</section>
+
+<section class="panel artworks-panel">
+<header class="panel-heading"><h2>Your Artworks</h2><p>Upload and manage the artworks displayed on your profile.</p></header>
+<div class="artwork-content">
+<div class="upload-box">
+<div class="upload-icon">＋</div>
+<div class="upload-copy"><h3>Upload your artwork</h3><p>Add a new artwork to your profile gallery. Choose an image to get started.</p></div>
+<label class="choose-file">Choose image<input type="file" id="artFile" accept="image/*"></label>
+</div>
+<div class="upload-form" id="uploadForm">
+<img id="artPreview" alt="Artwork preview">
+<input type="text" id="artTitle" placeholder="Artwork title">
+<div class="upload-actions"><button type="button" class="cancel-upload" id="cancelUpload">Cancel</button><button type="button" class="publish-upload" id="publishUpload">Add Artwork</button></div>
+</div>
+<h3 class="section-title">My Gallery</h3>
+<div class="artwork-grid" id="artworkGrid">
+<article class="artwork-card"><img src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?w=800" alt="Colorful abstract artwork"><div class="artwork-info"><strong>Colorful Expressions</strong><span>Abstract Art</span></div></article>
+<article class="artwork-card"><img src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=800" alt="Traditional framed artwork"><div class="artwork-info"><strong>Quiet Afternoon</strong><span>Traditional Art</span></div></article>
+<article class="artwork-card"><img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800" alt="Digital abstract artwork"><div class="artwork-info"><strong>Blue Dimensions</strong><span>Digital Art</span></div></article>
+<div class="empty-art" id="emptyArt">No artworks match your search.</div>
+</div>
+</div>
+</section>
+</main>
+
+<script>
+const birthdate=document.getElementById("birthdate");
+function updateAge(){
+ if(!birthdate.value){document.getElementById("ageDisplay").textContent="—";return;}
+ const dob=new Date(birthdate.value+"T00:00:00"),today=new Date();
+ let age=today.getFullYear()-dob.getFullYear();
+ const beforeBirthday=today.getMonth()<dob.getMonth()||(today.getMonth()===dob.getMonth()&&today.getDate()<dob.getDate());
+ if(beforeBirthday)age--;
+ document.getElementById("ageDisplay").textContent=age>=0?age+" years old":"Invalid birthdate";
+}
+birthdate.addEventListener("change",updateAge);updateAge();
+document.getElementById("profileForm").addEventListener("submit",e=>{
+ e.preventDefault();
+ const first=document.getElementById("firstName").value.trim(),last=document.getElementById("lastName").value.trim();
+ document.getElementById("photoPlaceholder").textContent=((first[0]||"")+(last[0]||"")).toUpperCase()||"ME";
+ document.getElementById("saveNote").textContent="Your profile changes are saved for this session.";
+});
+document.getElementById("photoInput").addEventListener("change",e=>{
+ const file=e.target.files[0];if(!file)return;
+ if(!file.type.startsWith("image/")){alert("Please choose an image file.");return;}
+ const img=document.getElementById("profilePhoto");img.src=URL.createObjectURL(file);img.style.display="block";document.getElementById("photoPlaceholder").style.display="none";
+});
+const artFile=document.getElementById("artFile"),uploadForm=document.getElementById("uploadForm"),artPreview=document.getElementById("artPreview");
+artFile.addEventListener("change",()=>{
+ const file=artFile.files[0];if(!file)return;
+ if(!file.type.startsWith("image/")){alert("Please choose an image file.");return;}
+ artPreview.src=URL.createObjectURL(file);artPreview.style.display="block";uploadForm.style.display="block";
+});
+document.getElementById("cancelUpload").addEventListener("click",()=>{artFile.value="";uploadForm.style.display="none";artPreview.removeAttribute("src");document.getElementById("artTitle").value=""});
+document.getElementById("publishUpload").addEventListener("click",()=>{
+ if(!artFile.files[0])return;
+ const title=document.getElementById("artTitle").value.trim()||artFile.files[0].name.replace(/\.[^.]+$/,"");
+ const card=document.createElement("article");card.className="artwork-card";
+ const img=document.createElement("img");img.src=artPreview.src;img.alt=title;
+ const info=document.createElement("div");info.className="artwork-info";
+ const strong=document.createElement("strong");strong.textContent=title;
+ const span=document.createElement("span");span.textContent="Recently uploaded";
+ info.append(strong,span);card.append(img,info);
+ document.getElementById("artworkGrid").insertBefore(card,document.getElementById("emptyArt"));
+ document.getElementById("cancelUpload").click();
+});
+document.getElementById("profileSearch").addEventListener("input",e=>{
+ const q=e.target.value.toLowerCase();let visible=0;
+ document.querySelectorAll(".artwork-card").forEach(card=>{const match=card.innerText.toLowerCase().includes(q);card.style.display=match?"":"none";if(match)visible++});
+ document.getElementById("emptyArt").style.display=visible?"none":"block";
+});
+</script>
+</body>
+</html>
