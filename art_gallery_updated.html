@@ -44,6 +44,9 @@ body{background:#f4f1ed;color:#333}
 .post-actions{display:flex;gap:25px;padding:12px 20px;border-top:1px solid #eee}
 .post-actions button{border:0;background:none;cursor:pointer;font-size:15px;color:#555;font-weight:bold}
 .post-actions button:hover{color:#b47b45}
+.post-actions .buy-button{margin-left:auto;background:#9b6636;color:#fff;border-radius:20px;padding:9px 20px;font-size:13px}
+.post-actions .buy-button:hover{background:#b47b45;color:#fff}
+@media(max-width:430px){.post-actions{gap:14px;flex-wrap:wrap}.post-actions .buy-button{margin-left:0}}
 .likes{padding:0 20px 12px;font-size:13px;color:#777}
 .comment-section{padding:12px 20px;border-top:1px solid #eee}
 .comment-section p{font-size:13px;margin-bottom:8px;color:#555}
@@ -93,6 +96,7 @@ body{background:#f4f1ed;color:#333}
       <div class="upload-top"><div class="avatar">Y</div><h2 class="upload-title">Upload your artwork here!</h2></div>
       <form id="uploadForm" class="upload-area">
         <textarea id="artCaption" placeholder="Share something about your artwork..." aria-label="Artwork description"></textarea>
+        <input id="artPrice" type="number" min="1" step="0.01" placeholder="Selling price (₱) — optional" aria-label="Artwork selling price" style="width:100%;padding:10px 12px;border:1px solid #e6e0da;border-radius:8px;margin:8px 0;background:#fff">
         <img id="imagePreview" class="preview" alt="Selected artwork preview">
         <div class="upload-tools">
           <label class="file-label">🖼️ Add photo
@@ -108,7 +112,7 @@ body{background:#f4f1ed;color:#333}
         <div class="post-header"><div class="avatar">JD</div><div class="artist-info"><h3>John David</h3><p>Digital Artist · Posted 2 hours ago</p></div></div>
         <img class="artwork" src="https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=900" alt="Colorful abstract painting">
         <div class="post-description"><h3>Abstract Dreams</h3><p>A beautiful abstract painting inspired by the combination of colors, emotions, and imagination. This artwork represents freedom and creativity through artistic expression.</p><div class="price">Price: ₱15,000.00</div></div>
-        <div class="post-actions"><button onclick="likePost(this)">♡ Like</button><button onclick="focusComment(this)">💬 Comment</button></div>
+        <div class="post-actions"><button onclick="likePost(this)">♡ Like</button><button onclick="focusComment(this)">💬 Comment</button><button class="buy-button" onclick="buyArtwork(this)">🛒 Buy</button></div>
         <div class="likes"><span>24</span> people liked this artwork.</div>
         <div class="comment-section"><p><b>Maria:</b> This artwork is amazing!</p><p><b>Alex:</b> I love the colors!</p><div class="comment-input"><input type="text" placeholder="Write a comment..."><button onclick="addComment(this)">Post</button></div></div>
       </article>
@@ -117,7 +121,7 @@ body{background:#f4f1ed;color:#333}
         <div class="post-header"><div class="avatar">SM</div><div class="artist-info"><h3>Sophia Martinez</h3><p>Traditional Artist · Posted 5 hours ago</p></div></div>
         <img class="artwork" src="https://images.unsplash.com/photo-1577083552431-6e5fd01aa342?w=900" alt="Colorful traditional artwork">
         <div class="post-description"><h3>Colors of Nature</h3><p>An expressive painting inspired by the beauty of nature. The vibrant colors represent life, peace, and the connection between humans and the environment.</p><div class="price">Price: ₱22,500.00</div></div>
-        <div class="post-actions"><button onclick="likePost(this)">♡ Like</button><button onclick="focusComment(this)">💬 Comment</button></div>
+        <div class="post-actions"><button onclick="likePost(this)">♡ Like</button><button onclick="focusComment(this)">💬 Comment</button><button class="buy-button" onclick="buyArtwork(this)">🛒 Buy</button></div>
         <div class="likes"><span>38</span> people liked this artwork.</div>
         <div class="comment-section"><p><b>Daniel:</b> Such a wonderful painting!</p><p><b>Angela:</b> Beautiful masterpiece!</p><div class="comment-input"><input type="text" placeholder="Write a comment..."><button onclick="addComment(this)">Post</button></div></div>
       </article>
@@ -180,6 +184,20 @@ body{background:#f4f1ed;color:#333}
   warning.addEventListener("click",event=>{if(event.target===warning)closeScreenshotWarning();});
 })();
 
+function buyArtwork(button){
+  const post=button.closest(".post");
+  const title=post.querySelector(".post-description h3")?.textContent.trim() || "this artwork";
+  const artist=post.querySelector(".artist-info h3")?.textContent.trim() || "the artist";
+  const priceElement=post.querySelector(".price");
+  const price=priceElement ? priceElement.textContent.replace(/^Price:\\s*/i,"").trim() : "";
+  const message=price
+    ? `Buy "${title}" by ${artist} for ${price}?`
+    : `Would you like to contact ${artist} about buying "${title}"?`;
+  if(confirm(message)){
+    alert("Thank you for your interest! This is a checkout demo. Connect a payment gateway and order system to complete purchases.");
+  }
+}
+
 function likePost(button){
   const liked=button.textContent.includes("Liked");
   button.textContent=liked?"♡ Like":"♥ Liked";
@@ -217,7 +235,7 @@ document.getElementById("uploadForm").addEventListener("submit",e=>{
   const inputRow=document.createElement("div");inputRow.className="comment-input";inputRow.innerHTML='<input type="text" placeholder="Write a comment..."><button onclick="addComment(this)">Post</button>';
   comments.append(inputRow);post.append(header,img,desc,actions,likes,comments);
   document.getElementById("posts").prepend(post);
-  document.getElementById("artCaption").value="";artFile.value="";preview.style.display="none";preview.removeAttribute("src");
+  document.getElementById("artCaption").value="";document.getElementById("artPrice").value="";artFile.value="";preview.style.display="none";preview.removeAttribute("src");
   applyFilters();
 });
 let activeCategory="All";
