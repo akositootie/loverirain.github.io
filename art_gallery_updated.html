@@ -5,6 +5,67 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Art Gallery - Home</title>
 <style>
+/* Payment popup */
+.payment-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0,0,0,0.65);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.payment-modal.show {
+  display: flex;
+}
+
+.payment-box {
+  background: #fff;
+  width: 100%;
+  max-width: 420px;
+  padding: 25px;
+  border-radius: 16px;
+  color: #292421;
+  box-shadow: 0 10px 35px rgba(0,0,0,.3);
+}
+
+.payment-box h2 {
+  margin-bottom: 15px;
+}
+
+.payment-option {
+  display: block;
+  padding: 15px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.payment-option:hover {
+  border-color: #9b6636;
+  background: #faf5ef;
+}
+
+.payment-box button {
+  padding: 11px 18px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+.continue-payment {
+  background: #9b6636;
+  color: white;
+}
+
+.close-payment {
+  background: #eee;
+  color: #333;
+}
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#f4f1ed;color:#333}
 .navbar{background:#292421;min-height:75px;display:grid;grid-template-columns:1fr minmax(240px,430px) 1fr;align-items:center;gap:24px;padding:12px 4%;position:sticky;top:0;z-index:100}
@@ -154,6 +215,41 @@ body{background:#f4f1ed;color:#333}
   </div>
 </div>
 
+<div class="payment-modal" id="paymentModal">
+  <div class="payment-box">
+    <h2>Choose Payment Method</h2>
+
+    <p id="selectedArtwork">Artwork name</p>
+    <h3 id="selectedPrice">₱0.00</h3>
+
+    <p>How would you like to pay?</p>
+
+    <label class="payment-option">
+      <input type="radio" name="paymentMethod"
+             value="GCash" checked>
+      <strong>GCash</strong>
+      <br>
+      <small>Pay using your GCash wallet</small>
+    </label>
+
+    <label class="payment-option">
+      <input type="radio" name="paymentMethod"
+             value="Bank Transfer">
+      <strong>Bank Transfer</strong>
+      <br>
+      <small>Pay using your bank account</small>
+    </label>
+
+    <div id="paymentMessage"></div>
+
+    <button class="close-payment"
+            onclick="closePayment()">Cancel</button>
+
+    <button class="continue-payment"
+            onclick="continuePayment()">Continue</button>
+  </div>
+</div>
+
 <script>
 // Best-effort screenshot shortcut warning. Browsers cannot detect or block every
 // operating-system screenshot method, so this only catches common keyboard shortcuts.
@@ -259,6 +355,46 @@ document.getElementById("clearFilter").addEventListener("click",()=>{
   activeCategory="All";document.getElementById("artSearch").value="";
   document.querySelectorAll(".category-card").forEach(c=>c.classList.remove("active"));applyFilters();
 });
+
+function buyArtwork(button) {
+    const post = button.closest(".post");
+
+    const title = post.querySelector(
+        ".post-description h3"
+    ).textContent;
+
+    const price = post.querySelector(
+        ".price"
+    )?.textContent || "Price not available";
+
+    document.getElementById("selectedArtwork").textContent = title;
+    document.getElementById("selectedPrice").textContent = price;
+
+    document.getElementById("paymentMessage").innerHTML = "";
+
+    document.getElementById("paymentModal").classList.add("show");
+}
+
+function closePayment() {
+    document.getElementById("paymentModal").classList.remove("show");
+}
+
+function continuePayment() {
+    const method = document.querySelector(
+        'input[name="paymentMethod"]:checked'
+    ).value;
+
+    const message = document.getElementById("paymentMessage");
+
+    if (method === "GCash") {
+        message.innerHTML =
+            "<p><strong>GCash selected!</strong><br>Proceed to GCash checkout when payment integration is connected.</p>";
+    } else {
+        message.innerHTML =
+            "<p><strong>Bank Transfer selected!</strong><br>Bank payment instructions will appear here once configured.</p>";
+    }
+}
+
 </script>
 </body>
 </html>
